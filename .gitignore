@@ -1,0 +1,30 @@
+# --- Secrets & personal data (never commit a real person's data) ---
+.env
+profile.yaml
+documents/*
+voice/*
+
+# --- Vector index (rebuilt from documents/) ---
+index/
+store/
+data/
+
+# Keep templates and folder placeholders tracked.
+!*.example.yaml
+!*.example
+!.gitkeep
+!documents/.gitkeep
+!voice/.gitkeep
+
+# --- Python ---
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# --- OS / editor ---
+.DS_Store
+.idea/
+.vscode/

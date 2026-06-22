@@ -1,0 +1,10 @@
+# EchoMe — Phase 1 (text brain) dependencies.
+# Pin loosely; the runtime must work on both the Ollama (free) and Claude (paid) providers.
+
+pyyaml>=6.0              # parse profile.yaml
+python-dotenv>=1.0       # load settings from .env (bring-your-own-key)
+chromadb>=0.5            # embedded vector store for RAG
+sentence-transformers>=3.0  # local embeddings
+pypdf>=4.0               # read PDFs dropped into documents/
+httpx>=0.27              # talk to the local Ollama HTTP API
+anthropic>=0.40          # Claude API provider (prod)
