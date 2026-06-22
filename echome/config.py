@@ -26,12 +26,16 @@ def _get(key: str, default: str) -> str:
 class Config:
     """All runtime settings for the text brain (Phase 1)."""
 
-    # Which LLM brain to use: "ollama" or "claude".
+    # Which LLM brain to use: "ollama", "openai", or "claude".
     provider: str
 
     # Ollama (free, local dev).
     ollama_model: str
     ollama_url: str
+
+    # OpenAI (paid API).
+    openai_api_key: str
+    openai_model: str
 
     # Claude (paid API, production).
     claude_api_key: str
@@ -52,6 +56,8 @@ def load_config() -> Config:
         provider=_get("PROVIDER", "ollama").lower(),
         ollama_model=_get("OLLAMA_MODEL", "llama3.1"),
         ollama_url=_get("OLLAMA_URL", "http://localhost:11434"),
+        openai_api_key=_get("OPENAI_API_KEY", ""),
+        openai_model=_get("OPENAI_MODEL", "gpt-4o-mini"),
         claude_api_key=_get("CLAUDE_API_KEY", ""),
         claude_model=_get("CLAUDE_MODEL", "claude-sonnet-4-6"),
         embed_model=_get("EMBED_MODEL", "sentence-transformers/all-MiniLM-L6-v2"),
