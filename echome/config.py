@@ -41,6 +41,10 @@ class Config:
     embed_model: str
     index_dir: str
 
+    # Retrieval relevance floor: chunks below this cosine similarity are dropped,
+    # so weak/irrelevant context never reaches the LLM (no-hallucination guardrail).
+    min_similarity: float
+
 
 def load_config() -> Config:
     """Build a Config from the current environment."""
@@ -52,4 +56,5 @@ def load_config() -> Config:
         claude_model=_get("CLAUDE_MODEL", "claude-sonnet-4-6"),
         embed_model=_get("EMBED_MODEL", "sentence-transformers/all-MiniLM-L6-v2"),
         index_dir=_get("INDEX_DIR", "index"),
+        min_similarity=float(_get("MIN_SIMILARITY", "0.25")),
     )
