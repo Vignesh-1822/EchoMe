@@ -45,6 +45,11 @@ class Config:
     embed_model: str
     index_dir: str
 
+    # Speech-to-text (Phase 2). Whisper runs locally on CPU (Apple Silicon has no
+    # CUDA; ctranslate2 uses CPU + int8 for speed).
+    whisper_model: str
+    whisper_compute_type: str
+
     # Retrieval relevance floor: chunks below this cosine similarity are dropped,
     # so weak/irrelevant context never reaches the LLM (no-hallucination guardrail).
     min_similarity: float
@@ -62,5 +67,7 @@ def load_config() -> Config:
         claude_model=_get("CLAUDE_MODEL", "claude-sonnet-4-6"),
         embed_model=_get("EMBED_MODEL", "sentence-transformers/all-MiniLM-L6-v2"),
         index_dir=_get("INDEX_DIR", "index"),
+        whisper_model=_get("WHISPER_MODEL", "base"),
+        whisper_compute_type=_get("WHISPER_COMPUTE_TYPE", "int8"),
         min_similarity=float(_get("MIN_SIMILARITY", "0.25")),
     )

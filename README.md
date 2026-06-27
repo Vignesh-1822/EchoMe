@@ -7,7 +7,8 @@ voice clip, and visitors can have a spoken or text conversation with a clearly-l
 AI version of you — embedded on your portfolio or shared as a link. It runs free and
 local for development; going live needs only an LLM API key and a voice path.
 
-> **Status:** 🚧 Under active construction. Currently building **Phase 1 (text brain)**.
+> **Status:** 🚧 Under active construction. Phase 1 (text brain) is done; currently on
+> **Phase 2 (speech-to-text input)** — you can now *speak* questions; replies are still text.
 > See [`ARCHITECTURE.md`](./ARCHITECTURE.md) for the full design and roadmap.
 
 ---
@@ -66,11 +67,42 @@ runs it funds their own usage.
 ```bash
 git clone https://github.com/<you>/echome.git
 cd echome
+python -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
 cp .env.example .env                 # PROVIDER=ollama is free
 cp profile.example.yaml profile.yaml # add your info
 # drop your resume / writing into documents/
-# then build the index and chat with your twin
+
+python -m echome.ingest              # build the vector index
+python -m echome.chat                # type to your twin
 ```
+
+### Talk to it (Phase 2 — speech-to-text input)
+
+Speak your questions; the twin still replies as text (voice output is Phase 3).
+
+**System dependency — PortAudio** (for microphone capture):
+```bash
+# macOS
+brew install portaudio        # usually optional: the sounddevice wheel bundles PortAudio,
+                              # but install this if mic capture fails to initialize
+# Debian/Ubuntu
+sudo apt-get install portaudio19-dev
+```
+
+Then:
+```bash
+python -m echome.voice_chat
+```
+
+**On first launch, expect:**
+- **A one-time Whisper model download** (~140 MB for `base`) to `~/.cache/huggingface`.
+  Set the size with `WHISPER_MODEL` in `.env` (`tiny`/`base`/`small`/`medium`).
+- **A microphone-permission prompt** from your OS the first time (macOS: System
+  Settings → Privacy & Security → Microphone → allow your terminal). If denied, capture
+  fails silently — re-enable and retry.
+- After the prompt `🎤 listening…`, just speak and pause — it auto-stops on silence,
+  prints `you said: …`, then the twin's reply. Say "quit" (or Ctrl-C) to leave.
 
 See [`ARCHITECTURE.md`](./ARCHITECTURE.md) for the phase-by-phase build.
 

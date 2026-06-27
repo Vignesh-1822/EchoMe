@@ -11,14 +11,10 @@ history gives follow-ups context without letting the prompt grow unbounded.
 from __future__ import annotations
 
 from echome.config import load_config
-from echome.persona import build_system_prompt, format_user_turn
-from echome.providers import ProviderError, chat
+from echome.conversation import generate_reply, is_exit, remember
+from echome.persona import build_system_prompt
 from echome.profile import load_profile
-from echome.rag import retrieve
-
-# Keep the last N exchanges (1 exchange = 1 user + 1 assistant message) so the
-# prompt stays small and cheap. 6 exchanges = 12 messages.
-MAX_EXCHANGES = 6
+from echome.providers import ProviderError
 
 
 def run() -> None:
@@ -47,26 +43,18 @@ def run() -> None:
 
         if not question:
             continue
-        if question.lower() in {"quit", "exit"}:
+        if is_exit(question):
             print("bye 👋")
             return
 
-        chunks = retrieve(question)  # public-only, 0.25 floor (defaults)
-        user_turn = format_user_turn(question, chunks)
-        messages = [*history, {"role": "user", "content": user_turn}]
-
         try:
-            reply = chat(system, messages)
+            reply, _chunks = generate_reply(system, history, question)
         except ProviderError as exc:
             print(f"\n[provider error] {exc}\n")
             continue
 
         print(f"\n{profile.name.split()[0].lower()} > {reply}\n")
-
-        # Store the RAW question (not the context-heavy turn) + reply, then trim.
-        history.append({"role": "user", "content": question})
-        history.append({"role": "assistant", "content": reply})
-        del history[: -2 * MAX_EXCHANGES]
+        remember(history, question, reply)
 
 
 if __name__ == "__main__":
