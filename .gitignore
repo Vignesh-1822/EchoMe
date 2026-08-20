@@ -18,6 +18,7 @@ data/
 
 # --- Python ---
 venv/
+venv-chatterbox/
 .venv/
 __pycache__/
 *.py[cod]

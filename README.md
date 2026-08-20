@@ -104,6 +104,73 @@ python -m echome.voice_chat
 - After the prompt `🎤 listening…`, just speak and pause — it auto-stops on silence,
   prints `you said: …`, then the twin's reply. Say "quit" (or Ctrl-C) to leave.
 
+### Hear it speak (Phase 3 — voice output)
+
+`python -m echome.voice_chat` also speaks each reply in a **cloned voice** built from
+`voice/voice_sample.wav` (set via `VOICE_REF`). TTS is pluggable via `TTS_ENGINE`.
+
+> 🔒 **Spoken-consent gate.** Before EchoMe will clone a voice, the enrollment clip must
+> contain the speaker saying, *in that same voice*: **"This is my voice, and I give
+> permission to use it."** It's verified locally with Whisper and logged (timestamp +
+> file hash) to `voice/consent.log`; without it, `voice_chat` runs text-only. Verify a
+> clip up front with `python -m echome.consent`. This ties consent to the actual
+> voiceprint — a checkbox anyone could tick over a stolen recording wouldn't.
+
+> 🌊 **Watermark.** Every synthesized clip is stamped with an inaudible **AudioSeal**
+> watermark (16 kHz output) marking it AI-generated, so a clip in your cloned voice can
+> be *proven* synthetic — it survives MP3/resample/trim where metadata wouldn't. One
+> watermark + one detector covers both engines (Chatterbox also keeps its native Perth
+> mark). Check any file with `python -m echome.watermark <file.wav>`. Controlled by
+> `TTS_WATERMARK` (default on) — keep it on for anything shared.
+
+**Voice engines — pick with `TTS_ENGINE`.** Two backends ship behind the same interface,
+and the right one depends on where you run:
+
+| | Speed (M3 Air, MPS) | Licensing | Use it for |
+|---|---|---|---|
+| **`luxtts`** *(default)* | ~1–1.5s per 3s clip (load ~31s) | CC-BY-NC weights → **local / non-commercial only** | Running your own twin locally on Apple Silicon |
+| **`chatterbox`** | **75–377s** per 3s clip (load ~66s) | MIT code + MIT weights, auto-watermarked → **shippable** | A public/commercial deploy on a **CUDA GPU host** |
+
+The tradeoff is real: **LuxTTS is fast on Apple Silicon but can't be shipped** (its weights
+are distilled from a non-commercial dataset), while **Chatterbox is cleanly licensed but
+25–125× slower than real-time on Mac CPU/MPS** — usable only with a CUDA GPU. So LuxTTS is
+the local default; switch to Chatterbox (and give it a GPU) when you deploy. Benchmark: 5
+consecutive same-sentence gens, model kept loaded, on an M3 Air.
+
+**Default engine — LuxTTS** (install separately; not in the pinned requirements).
+LuxTTS pulls two git-only packages (`linacodec`, and a `piper-phonemize` that has no
+macOS-arm64 wheel), so the one-line install fails — use this recipe instead:
+```bash
+# 1. git-only neural codec
+pip install git+https://github.com/ysharma3501/LinaCodec.git
+# 2. phonemizer with a macOS arm64 wheel (the base piper-phonemize has none)
+pip install piper-phonemize-fix
+# 3. LuxTTS itself, skipping its unresolvable name-pins...
+pip install --no-deps git+https://github.com/ysharma3501/LuxTTS.git
+# 4. ...then its real deps that ARE on PyPI
+pip install cn2an inflect jieba lhotse librosa tensorboard pypinyin pydub
+pip install "setuptools<81"        # keep both torch and zipvoice satisfied
+```
+> **Note:** pip will warn that zipvoice wants `transformers<=4.57.6` while the RAG stack
+> uses `transformers 5.x`. This is a resolver warning only — LuxTTS runs fine at runtime
+> on 5.x. **Do not downgrade transformers**; it would break the embedding model.
+
+> ⚠️ **Licensing:** LuxTTS weights are distilled from ZipVoice, whose base model is
+> trained on **Emilia (CC BY-NC 4.0 — non-commercial)**. The Apache-2.0 label covers the
+> *code*, not the *training data*, so LuxTTS is fine for **local/personal use** but **not
+> cleanly licensed for a public or commercial release**. Swap `TTS_ENGINE` to a
+> cleanly-licensed engine (e.g. Chatterbox, MIT) before shipping — the pluggable
+> interface makes this a one-line change.
+
+**On first launch, expect:**
+- **A one-time LuxTTS model download** from Hugging Face (model load + reference
+  encoding took ~2.5 min on first run on an M3 Air, mostly download).
+- **Per-reply latency:** ~1–1.5s steady-state for a short sentence on **MPS** (Apple
+  Silicon GPU; falls back to CPU for the few unsupported vocoder ops, handled
+  automatically). The first gen is ~2.6s; the reference encoding is cached across replies.
+- If LuxTTS isn't installed or fails to load, `voice_chat` **degrades gracefully to
+  text-only** (it prints a notice and keeps working) rather than crashing.
+
 See [`ARCHITECTURE.md`](./ARCHITECTURE.md) for the phase-by-phase build.
 
 ## Contributing

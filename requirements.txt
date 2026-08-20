@@ -12,5 +12,14 @@ openai>=1.40             # OpenAI API provider
 
 # --- Phase 2: speech-to-text input ---
 faster-whisper>=1.0      # local Whisper transcription (downloads model on first run)
-sounddevice>=0.4         # microphone capture (bundles PortAudio in the wheel)
+sounddevice>=0.4         # microphone capture + speaker playback (bundles PortAudio)
 webrtcvad-wheels>=2.0    # voice-activity detection for auto start/stop (prebuilt wheels)
+
+# --- Phase 3: text-to-speech voice output ---
+soundfile>=0.12          # read/write WAV (reference clip + optional saved output)
+audioseal>=0.2           # inaudible watermark on all synthesized audio (AI provenance)
+# TTS engine (pluggable). Default LuxTTS is for LOCAL/non-commercial use only — its
+# weights derive from ZipVoice/Emilia (CC BY-NC). Swap to a cleanly-licensed engine
+# (e.g. Chatterbox) before any public/commercial release. LuxTTS has git-only deps and
+# a no-deps install dance — see the README 'Hear it speak' section for the full recipe.
+# (kept out of the pinned list so the rest of the app installs without it)
