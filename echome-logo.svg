@@ -1,0 +1,51 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>EchoMe — voice waveform identity logo</title>
+  <defs>
+    <style>
+      @keyframes pulse  { 0%,100%{opacity:1}   50%{opacity:0.3} }
+      @keyframes pulse2 { 0%,100%{opacity:0.6} 50%{opacity:0.15} }
+      .w1{animation:pulse  2s ease-in-out 0s    infinite}
+      .w2{animation:pulse  2s ease-in-out .35s  infinite}
+      .w3{animation:pulse  2s ease-in-out .7s   infinite}
+      .w4{animation:pulse2 2s ease-in-out 0s    infinite}
+      .w5{animation:pulse2 2s ease-in-out .35s  infinite}
+      .w6{animation:pulse2 2s ease-in-out .7s   infinite}
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="120" height="120" rx="26" fill="#0f172a"/>
+  <rect x="2" y="2" width="116" height="116" rx="24" fill="#12100e" stroke="#2d2a28" stroke-width="1"/>
+
+  <!-- Head circle outline -->
+  <circle cx="60" cy="60" r="42" fill="none" stroke="#2d2a28" stroke-width="1"/>
+
+  <!-- Top waveform bars (amber — voice out) -->
+  <rect x="43" y="24" width="5" height="14" rx="2.5" fill="#f59e0b" class="w2"/>
+  <rect x="52" y="18" width="5" height="20" rx="2.5" fill="#f59e0b" class="w1"/>
+  <rect x="61" y="13" width="5" height="25" rx="2.5" fill="#f59e0b" class="w3"/>
+  <rect x="70" y="18" width="5" height="20" rx="2.5" fill="#f59e0b" class="w1"/>
+  <rect x="79" y="24" width="5" height="14" rx="2.5" fill="#f59e0b" class="w2"/>
+
+  <!-- Bottom waveform bars (blue — echo back) -->
+  <rect x="43" y="82" width="5" height="14" rx="2.5" fill="#4a9eff" class="w5"/>
+  <rect x="52" y="82" width="5" height="20" rx="2.5" fill="#4a9eff" class="w4"/>
+  <rect x="61" y="82" width="5" height="25" rx="2.5" fill="#4a9eff" class="w6"/>
+  <rect x="70" y="82" width="5" height="20" rx="2.5" fill="#4a9eff" class="w4"/>
+  <rect x="79" y="82" width="5" height="14" rx="2.5" fill="#4a9eff" class="w5"/>
+
+  <!-- Left waveform bars (amber) -->
+  <rect x="16" y="43" width="14" height="5" rx="2.5" fill="#f59e0b" class="w3"/>
+  <rect x="11" y="52" width="19" height="5" rx="2.5" fill="#f59e0b" class="w1"/>
+  <rect x="16" y="61" width="14" height="5" rx="2.5" fill="#f59e0b" class="w2"/>
+
+  <!-- Right waveform bars (blue — echo) -->
+  <rect x="90" y="43" width="14" height="5" rx="2.5" fill="#4a9eff" class="w5"/>
+  <rect x="90" y="52" width="19" height="5" rx="2.5" fill="#4a9eff" class="w4"/>
+  <rect x="90" y="61" width="14" height="5" rx="2.5" fill="#4a9eff" class="w6"/>
+
+  <!-- Center AI dot -->
+  <circle cx="60" cy="60" r="8" fill="#f59e0b"/>
+  <circle cx="60" cy="60" r="4" fill="#0f172a"/>
+  <circle cx="60" cy="60" r="1.5" fill="#f59e0b"/>
+</svg>
