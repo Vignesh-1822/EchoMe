@@ -91,15 +91,6 @@ EchoMe is **always labelled as an AI twin**. It is not a tool for secretly imper
 
 ---
 
-## Roadmap
-
-- [x] Phase 1 — Text brain (RAG + LLM)
-- [x] Phase 2 — Speech-to-text input
-- [ ] Phase 3 — Voice output (cloned voice)
-- [ ] Phase 4 — Embeddable portfolio widget
-
----
-
 ## License
 
 [MIT](LICENSE) — Note: bundled model weights carry their own licenses; verify before commercial use.
